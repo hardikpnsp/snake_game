@@ -407,36 +407,12 @@ int main()
                     }
                 }
 
+                head = snake;
+                SDL_Rect *dstrect = (SDL_Rect *)malloc(sizeof(SDL_Rect));
                 // rendering portion
                 if (movement)
                 {
-                    SDL_Rect *dstrect = (SDL_Rect *)malloc(sizeof(SDL_Rect));
-
-                    head = snake;
-                    // render the head of the snake
-                    dstrect->x = head->x * GRID_SQUARE_DIMENSION;
-                    dstrect->y = head->y * GRID_SQUARE_DIMENSION;
-                    dstrect->h = GRID_SQUARE_DIMENSION;
-                    dstrect->w = GRID_SQUARE_DIMENSION;
-
-                    SDL_BlitSurface(head->snakeSpirte, NULL, gScreenSurface, dstrect);
-
-                    head = head->next;
-
-                    // handle the rendering of block next to head for corner control
-                    if (head != NULL)
-                    {
-                        dstrect->x = head->x * GRID_SQUARE_DIMENSION;
-                        dstrect->y = head->y * GRID_SQUARE_DIMENSION;
-                        dstrect->h = GRID_SQUARE_DIMENSION;
-                        dstrect->w = GRID_SQUARE_DIMENSION;
-
-                        SDL_BlitSurface(head->snakeSpirte, NULL, gScreenSurface, dstrect);
-
-                        head = head->next;
-                    }
-
-                    // render the remaining body of the snake
+                    // render the entire snake
                     while (head != NULL)
                     {
                         dstrect->x = head->x * GRID_SQUARE_DIMENSION;
