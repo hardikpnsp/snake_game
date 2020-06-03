@@ -211,7 +211,7 @@ void increaseSnakeSizeByOne(struct SnakeNode *head, Directions d)
     body->x = head->x;
     body->y = head->y;
     body->next = temp;
-    body->snakeSpirte = snakeBodyUp;
+    body->snakeSpirte = snakeBody[d];
 
     snake->next = body;
     switch (d)
@@ -266,6 +266,12 @@ int main()
 
                 struct SnakeNode *head = snake;
 
+                Directions old_direction = UP;
+                Directions new_direction = UP;
+
+                // did the snake move ?
+                bool movement = false;
+
                 //Handle events on queue
                 while (SDL_PollEvent(&e) != 0)
                 {
@@ -282,7 +288,8 @@ int main()
                         int temp_y = head->y;
                         Directions temp_d = head->d;
 
-                        bool movement = false;
+                        old_direction = head->d;
+
                         switch (e.key.keysym.sym)
                         {
                         case SDLK_UP:
@@ -321,6 +328,9 @@ int main()
                             movement = false;
                             break;
                         }
+
+                        new_direction = head->d;
+
                         if (movement)
                         {
                             head = head->next;
@@ -329,12 +339,15 @@ int main()
                                 int temp_temp_x = head->x;
                                 int temp_temp_y = head->y;
                                 Directions temp_temp_d = head->d;
+
                                 head->x = temp_x;
                                 head->y = temp_y;
                                 head->d = temp_d;
+
                                 temp_x = temp_temp_x;
                                 temp_y = temp_temp_y;
                                 temp_d = temp_temp_d;
+
                                 head = head->next;
                             }
                         }
@@ -360,36 +373,61 @@ int main()
                     }
                 }
 
-                SDL_Rect *dstrect = (SDL_Rect *)malloc(sizeof(SDL_Rect));
-
-                head = snake;
-                // render the head of the snake
-                dstrect->x = head->x * GRID_SQUARE_DIMENSION;
-                dstrect->y = head->y * GRID_SQUARE_DIMENSION;
-                dstrect->h = GRID_SQUARE_DIMENSION;
-                dstrect->w = GRID_SQUARE_DIMENSION;
-
-                head->snakeSpirte = snakeHead[head->d];
-
-                SDL_BlitSurface(head->snakeSpirte, NULL, gScreenSurface, dstrect);
-                head = head->next;
-
-                // render the remaining body of the snake
-                while (head != NULL)
+                if (movement)
                 {
+                    SDL_Rect *dstrect = (SDL_Rect *)malloc(sizeof(SDL_Rect));
+
+                    head = snake;
+                    // render the head of the snake
                     dstrect->x = head->x * GRID_SQUARE_DIMENSION;
                     dstrect->y = head->y * GRID_SQUARE_DIMENSION;
                     dstrect->h = GRID_SQUARE_DIMENSION;
                     dstrect->w = GRID_SQUARE_DIMENSION;
 
-                    head->snakeSpirte = snakeBody[head->d];
+                    head->snakeSpirte = snakeHead[head->d];
+
                     SDL_BlitSurface(head->snakeSpirte, NULL, gScreenSurface, dstrect);
 
                     head = head->next;
-                }
-                free(dstrect);
 
-                SDL_UpdateWindowSurface(gWindow);
+                    // handle the block next to head for corner control
+                    if (head != NULL)
+                    {
+                        dstrect->x = head->x * GRID_SQUARE_DIMENSION;
+                        dstrect->y = head->y * GRID_SQUARE_DIMENSION;
+                        dstrect->h = GRID_SQUARE_DIMENSION;
+                        dstrect->w = GRID_SQUARE_DIMENSION;
+
+                        if (old_direction == new_direction)
+                        {
+                            head->snakeSpirte = snakeBody[head->d];
+                        }
+                        else
+                        {
+                            head->snakeSpirte = snakeCorner;
+                        }
+
+                        SDL_BlitSurface(head->snakeSpirte, NULL, gScreenSurface, dstrect);
+
+                        head = head->next;
+                    }
+
+                    // render the remaining body of the snake
+                    while (head != NULL)
+                    {
+                        dstrect->x = head->x * GRID_SQUARE_DIMENSION;
+                        dstrect->y = head->y * GRID_SQUARE_DIMENSION;
+                        dstrect->h = GRID_SQUARE_DIMENSION;
+                        dstrect->w = GRID_SQUARE_DIMENSION;
+
+                        head->snakeSpirte = snakeBody[head->d];
+                        SDL_BlitSurface(head->snakeSpirte, NULL, gScreenSurface, dstrect);
+
+                        head = head->next;
+                    }
+                    free(dstrect);
+                    SDL_UpdateWindowSurface(gWindow);
+                }
             }
         }
     }
