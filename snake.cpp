@@ -261,9 +261,6 @@ int main()
 
             while (!quit)
             {
-                // Clear the current surface
-                SDL_FillRect(gScreenSurface, NULL, 0x000000);
-
                 struct SnakeNode *head = snake;
 
                 Directions old_direction = UP;
@@ -347,7 +344,9 @@ int main()
                                 if (old_direction == new_direction)
                                 {
                                     head->snakeSpirte = snakeBody[temp_d];
-                                }else{
+                                }
+                                else
+                                {
                                     head->snakeSpirte = snakeCorner;
                                 }
 
@@ -407,9 +406,12 @@ int main()
                     }
                 }
 
+                // rendering portion
                 head = snake;
                 SDL_Rect *dstrect = (SDL_Rect *)malloc(sizeof(SDL_Rect));
-                // rendering portion
+
+                // Clear the current surface
+                SDL_FillRect(gScreenSurface, NULL, 0x000000);
                 if (movement)
                 {
                     // render the entire snake
