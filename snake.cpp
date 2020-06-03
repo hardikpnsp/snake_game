@@ -44,7 +44,13 @@ SDL_Surface *snakeBodyRight = NULL;
 SDL_Surface *snakeBody[4];
 
 // The corner of snake body
-SDL_Surface *snakeCorner = NULL;
+SDL_Surface *snakeCornerUpRight = NULL;
+
+SDL_Surface *snakeCornerLeftUp = NULL;
+SDL_Surface *snakeCornerDownLeft = NULL;
+SDL_Surface *snakeCornerRightDown = NULL;
+
+SDL_Surface *snakeCorner[4][4];
 
 // All possible directions
 enum Directions
@@ -168,12 +174,41 @@ bool loadMedia()
     snakeHead[LEFT] = snakeHeadLeft;
     snakeHead[RIGHT] = snakeHeadRight;
 
-    snakeCorner = SDL_LoadBMP("bmp/snake_body_corner_up_right.bmp");
-    if (snakeCorner == NULL)
+    snakeCornerUpRight = SDL_LoadBMP("bmp/snake_body_corner_up_right.bmp");
+    if (snakeCornerUpRight == NULL)
     {
         printf("Unable to load image %s! SDL_Error: %s\n", "bmp/snake_body_corner_up_right.bmp", SDL_GetError());
         success = false;
     }
+
+    snakeCornerRightDown = SDL_LoadBMP("bmp/snake_body_corner_right_down.bmp");
+    if (snakeCornerRightDown == NULL)
+    {
+        printf("Unable to load image %s! SDL_Error: %s\n", "bmp/snake_body_corner_right_down.bmp", SDL_GetError());
+        success = false;
+    }
+    snakeCornerLeftUp = SDL_LoadBMP("bmp/snake_body_corner_left_up.bmp");
+    if (snakeCornerLeftUp == NULL)
+    {
+        printf("Unable to load image %s! SDL_Error: %s\n", "bmp/snake_body_corner_left_up.bmp", SDL_GetError());
+        success = false;
+    }
+    snakeCornerDownLeft = SDL_LoadBMP("bmp/snake_body_corner_down_left.bmp");
+    if (snakeCornerDownLeft == NULL)
+    {
+        printf("Unable to load image %s! SDL_Error: %s\n", "bmp/snake_body_corner_down_left.bmp", SDL_GetError());
+        success = false;
+    }
+
+    // hoping that other blocks will never be accessed
+    snakeCorner[UP][RIGHT] = snakeCornerUpRight;
+    snakeCorner[UP][LEFT] = snakeCornerRightDown;
+    snakeCorner[DOWN][RIGHT] = snakeCornerLeftUp;
+    snakeCorner[DOWN][LEFT] = snakeCornerDownLeft;
+    snakeCorner[LEFT][UP] = snakeCornerLeftUp;
+    snakeCorner[LEFT][DOWN] = snakeCornerUpRight;
+    snakeCorner[RIGHT][UP] = snakeCornerDownLeft;
+    snakeCorner[RIGHT][DOWN] = snakeCornerRightDown;
 
     return success;
 }
@@ -347,7 +382,7 @@ int main()
                                 }
                                 else
                                 {
-                                    head->snakeSpirte = snakeCorner;
+                                    head->snakeSpirte = snakeCorner[old_direction][new_direction];
                                 }
 
                                 int temp_temp_x = head->x;
