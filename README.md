@@ -1,6 +1,6 @@
 # snake_game
 
-for now it is just and experiment with various kinds of snake mechanics. but it can evolve into either challenging skill based small game or a snake rpg or a snake dungeon crawler . . .
+For now, it is just an experiment with various kinds of snake mechanics. But, in the future, it can evolve into either a challenging skill based small game or a snake rpg or a snake dungeon crawler.
 
 ## Build and Run Process
 
